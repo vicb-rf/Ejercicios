@@ -1,4 +1,5 @@
-//Nivel 2 - Ejercicio 1
+"use strict";
+//Ejercicio 1
 
 let employees = [
   {
@@ -36,47 +37,52 @@ let salaries = [
  */
 
 const getEmpleado = (id) => {
-  return new Promise((resolve, reject) => {
-    if ((retorna = employees.find((empleado) => empleado.id === id))) {
-      resolve(retorna);
+  let retornaEmpleado;
+  return new Promise((resolve, reject) => {    
+    if (retornaEmpleado = employees.find((empleado) => empleado.id === id)) {
+      //console.log("Empleado encontrado");
+      resolve(retornaEmpleado);
+     
     } else {
       reject("Empleado no encontrado");
     }
   });
 };
 
-/*getEmpleado(9)
-  .then((res) => {
-    return res;
-  })
+getEmpleado(1)
+  .then(res => console.log('ejercicio1', res.name))
   .catch((error) => {
-    console.error(error);
+    console.error('ejercicio1', error);
   });
-  */
+  
 
-//Nivel 2 - Ejercicio 27
+
+//Ejercicio 2
 /**
  * Creu una altra arrow function getSalario que rebi com a paràmetre un objecte employee
  * i retorni el seu salari
  */
 
 const getSalario = (empleadoObj) => {
+  let retornaSalario;
   return new Promise((resolve, reject) => {
-    if (
-      (retorna = salaries.find((empleado) => empleado.id === empleadoObj.id))
-    ) {
-      resolve(retorna.salary);
+    if (retornaSalario = salaries.find((empleado) => empleado.id === empleadoObj.id)) {
+      {
+        resolve(retornaSalario.salary);
+      }
     } else {
-      reject("Empleado no encontrado");
+      reject("No hay datos");
     }
   });
 };
 
-/*getSalario(employees[1])
-  .then((res) => console.log(res))
-  .catch((error) => console.error(error));
-*/
-//Nivel 2 - Ejercicio 3
+getSalario(employees[1])
+  .then((res) => console.log('ejercicio2', res))
+  .catch((error) => console.error('ejercicio2', error));
+
+
+
+//Ejercicio 3
 /**
  * Invoqui la primera Promise getEmpleado i posteriorment getSalario,
  *  niant l'execució de les dues promises.
@@ -84,12 +90,12 @@ const getSalario = (empleadoObj) => {
 
 getEmpleado(3)
   .then((res) => {
-    console.log(res.name);
+    console.log('ejercicio3', res.name);
     getSalario(res)
     .then((res) => {
-      console.log(res);
+      console.log('ejercicio3', res);
     });
   })
   .catch((error) => {
-    console.error(error);
+    console.error('ejercicio3', error);
   });

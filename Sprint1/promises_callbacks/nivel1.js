@@ -1,5 +1,5 @@
-'use strict'
-//Nivel 1 - Ejercicio 1
+'use strict';
+//Ejercicio 1
 //Crear una function que retorni una Promise que invoqui la funcion resolve() o bé reject() que rep.
 // Invocar-la des de fora pasandole totes dues funcions que imprimeixin un missatge diferent en cada cas.
 
@@ -18,30 +18,29 @@ function retornaPromesa(parametro){
 } 
 
 
-retornaPromesa(1)
+retornaPromesa(1)    
 .then((res) => {
-    console.log(res);    
+    console.log('Ejercicio 1', res);    
 })
 .catch((rej) => {
-    console.error(rej);
+    console.error('Ejercicio 1', rej);
 })
 
 
-//Nivel 1 - Ejercicio 2
+//Ejercicio 2
 //Crear una arrow function que, rebent un paràmetre i una function callback, li passi a la funció 
 //un missatge o un altre (que s'imprimirà per consola) en funció del paràmetre.
 
 const ejeCallback = (parametro, callback) => {
     if(parametro == 1){
-        callback("Si parametro es 1, imprime Primer mensaje");
+        callback("Si parametro es 1, imprime Primer mensaje de ejercicio2");
         return;
     }else{
-        callback("Si parametro no es 1, imprime Segundo Mensaje");
+        callback("Si parametro no es 1, imprime Segundo mensaje de ejercicio2");
     }   
 }
 
-ejeCallback(2, (mensaje) => {
+ejeCallback(10, (mensaje) => {
     console.log(mensaje);
 })
-
 
