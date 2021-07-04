@@ -36,10 +36,11 @@ Creu una altra arrow function getSalario que rebi com a paràmetre un objecte Em
  */
 
 const getEmpleado = (id) => {
-  let retorna;
   return new Promise((resolve, reject) => {
-    if ((retorna = employees.find((empleado) => empleado.id === id))) {
-      resolve(retorna);
+    let retornaEmpleado;
+
+    if ((retornaEmpleado = employees.find((empleado) => empleado.id === id))) {
+      resolve(retornaEmpleado);
     } else {
       reject("Empleado no encontrado");
     }
@@ -49,9 +50,7 @@ const getEmpleado = (id) => {
 const getSalario = (empleadoObj) => {
   let retorna;
   return new Promise((resolve, reject) => {
-    if (
-      (retorna = salaries.find((empleado) => empleado.id === empleadoObj.id))
-    ) {
+    if ((retorna = salaries.find((empleado) => empleado.id === empleadoObj.id))) {
       resolve(retorna.salary);
     } else {
       reject("Empleado no encontrado");
@@ -62,48 +61,25 @@ const getSalario = (empleadoObj) => {
 getEmpleado(1)
   .then((res) => {
     console.log(res.name);
-    getSalario(res).then((res) => {
-      console.log(res);
-    });
+    getSalario(res).then(console.log);
   })
-  .catch((error) => {
-    console.error(error);
-  });
+  .catch(console.error);
 
 /**
  * - Exercici 2
 Creu una funció asíncrona que, rebent un id d'empleat, imprimeixi per pantalla el nom de l'empleat i el seu salari
  */
 
-async function empleado(id){
-    
-    try{
-        
-        let empObj = await getEmpleado(id);
-        console.log("atraves de sync away: ", empObj.name);
+async function empleado(id) {
+  try {
+    let empObj = await getEmpleado(id);
+    console.log("atraves de sync away: ", empObj.name);
 
-        let salario = await getSalario(empObj);
-        console.log("atraves de sync away: ", salario);
-
-    }catch(err){
-        console.error(err);
-
-    }
+    let salario = await getSalario(empObj);
+    console.log("atraves de sync away: ", salario);
+  } catch (err) {
+    console.error("atraves de sync away: ", err);
+  }
 }
 
-empleado(9);
-
-/**
- * Nivell 2
-- Exercici 1
-Creu una funció asíncrona que anomeni a una altra que retorni una Promise que efectuï la seva resolve
-amb una demora de 2 segons.
- */
-
- 
-
-/**
- * Nivell 3
-- Exercici 1
-Capturi tots els errors possibles del Nivell 2.
- */
+empleado(1);
