@@ -35,14 +35,12 @@ function decodifica(archivo, code) {
 
     var data = fs.readFileSync(archivo).toString();
     let bufe = Buffer.from(data, code);
-    fs.writeFileSync(`${archivo}Inicial`, bufe.toString());
+    fs.writeFileSync(`${archivo}Inicial.txt`, bufe.toString());
     console.log(`${archivo} decodificado...`);
-
-
 }
 
 async function ejercicio1_2() {
-    console.log('Inicio....')
+    console.log('Continua....')
     let archivoDesencriptado = await desencriptarArchivo('archivobase64.enc');
     let archivoDesencriptado1 = await desencriptarArchivo('archivohex.enc');
     decodifica(archivoDesencriptado, 'base64');
