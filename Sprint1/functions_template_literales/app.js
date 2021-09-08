@@ -37,21 +37,26 @@ console.log(`Nombre: ${nombre} Apellido: ${apellido}`);
  *  deu vegades
  */
 
-let funcionesMatriz = [];
+ var arrayfunciones = new Array(10);
 
-for(let i = 0; i < 10; i++){
-    funcionesMatriz.push(cuenta());
-}
-
-funcionesMatriz.forEach;
-
-function cuenta(){
-    for(let i = 0; i < 10; i++){
-        console.log(i);
-    }        
-}
-
-
+ function llenarArray(){    
+     for(let i = 0; i < 10; i++){
+         arrayfunciones[i] = `funcion${i}`;
+     }    
+ }
+ 
+ function imprimir(){
+     llenarArray();
+     console.log(arrayfunciones);
+     for(i = 0; i < arrayfunciones.length; i++){        
+         console.log(arrayfunciones[i]);
+         for (j = 0; j < 10; j++){
+             console.log(j);
+         }         
+     }
+ }
+ 
+ imprimir();
 
 
 //N3-exercici2

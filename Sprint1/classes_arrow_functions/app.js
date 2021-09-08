@@ -46,7 +46,8 @@ console.log(persona);
 
 //Nivel3 - Ejercicio 1
 /**
- * Crear una function creadora d'objectes, abstraient la definició de les classes. Invocar-amb diferents definicions.
+ * Crear una function creadora d'objectes, abstraient la definició de les classes.
+ * Invocar-amb diferents definicions.
  */
 
 function creaObjeto(nombre, tipo, modelo){
@@ -62,5 +63,3 @@ let obj3 = new creaObjeto('plato', 'redondo', 'grande');
 console.log(obj1);
 console.log(obj2);
 console.log(obj3);
-
-
