@@ -4,12 +4,14 @@
  * Imprimir per pantalla el resultat d'una arrow function autoinvocable que sumi dos nombres.
  */
 
-let n1 = 23;
-let n2 = 45;
-
-((num1, num2) => {
-    console.log(num1 + num2);
-})(n1, n2);
+ let a = 10;
+ let b = 19;
+ 
+ var sumar =  (() => {
+     return a + b;
+   })();
+ 
+   console.log(sumar);
 
 
 
@@ -46,11 +48,10 @@ console.log(persona);
 
 //Nivel3 - Ejercicio 1
 /**
- * Crear una function creadora d'objectes, abstraient la definició de les classes.
- * Invocar-amb diferents definicions.
+ * Crear una function creadora d'objectes, abstraient la definició de les classes. Invocar-amb diferents definicions.
  */
 
- function Coche(marca, color, modelo){
+function Coche(marca, color, modelo){
   this.marca = marca;
   this.color = color;
   this.modelo = modelo;
