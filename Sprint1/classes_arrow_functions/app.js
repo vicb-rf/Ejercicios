@@ -50,16 +50,16 @@ console.log(persona);
  * Invocar-amb diferents definicions.
  */
 
-function creaObjeto(nombre, tipo, modelo){
-  this.nombre = nombre;
-  this.tipo = tipo;
+ function Coche(marca, color, modelo){
+  this.marca = marca;
+  this.color = color;
   this.modelo = modelo;
 }
 
-let obj1 = new creaObjeto('tasa', 'cosa', 'unico');
-let obj2 = new creaObjeto('coche', 'turismo', 'gasolina');
-let obj3 = new creaObjeto('plato', 'redondo', 'grande');
+let coche1 = new Coche('toyota', 'negro', 'auris')
+let coche2 = new Coche('opel', 'blanco', 'corsa');
+let coche3 = new Coche('nisan', 'rojo', 'qasqai');
 
-console.log(obj1);
-console.log(obj2);
-console.log(obj3);
+console.log(coche1);
+console.log(coche2);
+console.log(coche3);

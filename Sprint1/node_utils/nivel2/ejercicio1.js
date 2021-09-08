@@ -17,6 +17,7 @@ console.log('Archivo comprimido');
 
 //Creu una funció que llisti per consola el contingut del directori d'usuari. Utilitzi node Child Processes.
 //Muestro el contenido de la carpeta actual(uso windows).
+const { exec } = require('child_process');
 
 exec('dir', (err, stdout) => {
     if(err) throw err;
