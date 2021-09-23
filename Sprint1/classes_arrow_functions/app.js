@@ -51,16 +51,39 @@ console.log(persona);
  * Crear una function creadora d'objectes, abstraient la definició de les classes. Invocar-amb diferents definicions.
  */
 
-function Coche(marca, color, modelo){
-  this.marca = marca;
-  this.color = color;
-  this.modelo = modelo;
+//Clase abstracta
+class Coche{
+  constructor(){
+      if(new.target === Coche){
+          throw new Error('this is an abstract class');
+      }
+  }
+
+  modeloCoche(){
+      console.log(`Modelo: ${this.modelo}`)
+  }
+
+  colorCoche(){
+      throw new Error("Metodo 'colorCoche()', debe ser implementado")
+  }
 }
 
-let coche1 = new Coche('toyota', 'negro', 'auris')
-let coche2 = new Coche('opel', 'blanco', 'corsa');
-let coche3 = new Coche('nisan', 'rojo', 'qasqai');
+const Toyota = function (modelo, color){
+  this.modelo = modelo;
+  this.color = color;
 
-console.log(coche1);
-console.log(coche2);
-console.log(coche3);
+}
+
+Toyota.prototype = Object.create(Coche.prototype);
+
+Toyota.prototype.colorCoche = function(){
+  console.log(`Color: ${this.color}`)
+}
+
+let t1 = new Toyota('auris', 'negro');
+let t2 = new Toyota('corolla', 'blanco' )
+
+t1.modeloCoche();
+t1.colorCoche();
+t2.modeloCoche();
+t2.colorCoche();

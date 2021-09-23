@@ -19,7 +19,7 @@ console.log('Archivo comprimido');
 //Muestro el contenido de la carpeta actual(uso windows).
 const { exec } = require('child_process');
 
-exec('dir', (err, stdout) => {
+exec('dir c:\\Users', (err, stdout) => {
     if(err) throw err;
     console.log('Muesta el contenido del directorio actual');
     console.log(stdout);

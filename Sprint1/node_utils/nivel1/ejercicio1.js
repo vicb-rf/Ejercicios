@@ -5,7 +5,7 @@ function ejercici(numero){
     if(numero > 0){
         setTimeout(()=>{
             console.log(`Mensaje ${numero} despues de 2 segundos`);
-            return(ejercici(numero - 1));
+            ejercici(numero - 1);
         }, 2000);            
     }    
 }
