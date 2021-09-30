@@ -15,22 +15,24 @@ const reverseText = str =>
 
 // Read and reverse contents of text files in a directory
 
+
 leerDirectorio(inbox)
 .then(files => {
   files.forEach(file =>{
     leerArchivo(join(inbox, file), 'utf-8')
-    .then(data => {
-      escribirArchivo(join(outbox, file), reverseText(data));
-      console.log(`${file} was successfully saved in the outbox!`);
-    })
-    .catch(err => {
-      console.log(err, "Error: Archivo inaccessible");
-    })
   })  
+})
+.then(data => {
+  escribirArchivo(join(outbox, file), reverseText(data));
+  console.log(`${file} was successfully saved in the outbox!`);
+})
+.catch(err => {
+  console.log(err, "Error: Archivo inaccessible");
 })
 .catch(err => {
   console.log(err, "Error: Folder inaccessible");
 });
+
 
 
 
