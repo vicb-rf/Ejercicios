@@ -7,10 +7,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema Optica
 -- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema Optica
--- -----------------------------------------------------
+DROP DATABASE IF EXISTS `optica`;
 CREATE SCHEMA IF NOT EXISTS `Optica` DEFAULT CHARACTER SET utf8 ;
 USE `Optica` ;
 
@@ -32,29 +29,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Optica`.`Gafas`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Optica`.`Gafas` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `marca` VARCHAR(45) NOT NULL,
-  `graduacionDer` DECIMAL(5,2) NOT NULL,
-  `graduacionIzq` DECIMAL(5,2) NOT NULL,
-  `tipoMontura` VARCHAR(45) NOT NULL,
-  `colorMontura` VARCHAR(45) NOT NULL,
-  `colorVidrio` VARCHAR(45) NOT NULL,
-  `precio` DECIMAL(8,3) NOT NULL,
-  `Proveedores_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_Gafas_Proveedores1_idx` (`Proveedores_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Gafas_Proveedores1`
-    FOREIGN KEY (`Proveedores_id`)
-    REFERENCES `Optica`.`Proveedores` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `Optica`.`Clientes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Optica`.`Clientes` (
@@ -64,11 +38,11 @@ CREATE TABLE IF NOT EXISTS `Optica`.`Clientes` (
   `telefono` INT NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `fechaRegistro` DATE NOT NULL,
-  `recomendadoCliente_id` INT NULL,
+  `Clientes_id` INT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_Clientes_Clientes1_idx` (`recomendadoCliente_id` ASC) VISIBLE,
+  INDEX `fk_Clientes_Clientes1_idx` (`Clientes_id` ASC) VISIBLE,
   CONSTRAINT `fk_Clientes_Clientes1`
-    FOREIGN KEY (`recomendadoCliente_id`)
+    FOREIGN KEY (`Clientes_id`)
     REFERENCES `Optica`.`Clientes` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -86,30 +60,36 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Optica`.`Ventas`
+-- Table `Optica`.`Gafas`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Optica`.`Ventas` (
-  `idVenta` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `Optica`.`Gafas` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `marca` VARCHAR(45) NOT NULL,
+  `graduacionDer` DECIMAL(5,2) NOT NULL,
+  `graduacionIzq` DECIMAL(5,2) NOT NULL,
+  `tipoMontura` VARCHAR(45) NOT NULL,
+  `colorMontura` VARCHAR(45) NOT NULL,
+  `colorVidrio` VARCHAR(45) NOT NULL,
+  `precio` DECIMAL(8,3) NOT NULL,
+  `fechaVenta` DATE NOT NULL,
+  `Proveedores_id` INT NOT NULL,
   `Clientes_id` INT NOT NULL,
-  `Gafas_id` INT NOT NULL,
   `Empleados_id` INT NOT NULL,
-  `precioTotal` DECIMAL(8,3) NOT NULL,
-  `fecha` DATE NOT NULL,
-  PRIMARY KEY (`idVenta`),
-  INDEX `fk_Ventas_Clientes1_idx` (`Clientes_id` ASC) VISIBLE,
-  INDEX `fk_Ventas_Gafas1_idx` (`Gafas_id` ASC) VISIBLE,
-  INDEX `fk_Ventas_Empleados1_idx` (`Empleados_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Ventas_Clientes1`
+  PRIMARY KEY (`id`),
+  INDEX `fk_Gafas_Proveedores1_idx` (`Proveedores_id` ASC) VISIBLE,
+  INDEX `fk_Gafas_Clientes1_idx` (`Clientes_id` ASC) VISIBLE,
+  INDEX `fk_Gafas_Empleados1_idx` (`Empleados_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Gafas_Proveedores1`
+    FOREIGN KEY (`Proveedores_id`)
+    REFERENCES `Optica`.`Proveedores` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Gafas_Clientes1`
     FOREIGN KEY (`Clientes_id`)
     REFERENCES `Optica`.`Clientes` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Ventas_Gafas1`
-    FOREIGN KEY (`Gafas_id`)
-    REFERENCES `Optica`.`Gafas` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Ventas_Empleados1`
+  CONSTRAINT `fk_Gafas_Empleados1`
     FOREIGN KEY (`Empleados_id`)
     REFERENCES `Optica`.`Empleados` (`id`)
     ON DELETE NO ACTION
@@ -132,10 +112,10 @@ insert into proveedores values(4, 'universal', 645678123, 945678123, '45678123A'
 select * from proveedores;
 
 describe clientes;
-insert into clientes values( 1,'Juan', 08019, '698765432', 'juan@gmail.com', '2021-08-01', null);
-insert into clientes values( 2,'Alberto', 01009, '687654329', 'alberto@hotmail.com', '2021-08-02', 1);
-insert into clientes values( 3,'Ainoha', 08040, '676543298', 'ainoha@icloud.com', '2021-08-03', null);
-insert into clientes values( 4, 'pedro', 04102, '676543297', 'pedro@hotmail.com', '2021-08-04', 3);
+insert into clientes values( 1,'Juan', 08019, '698765432', 'juan@gmail.com', '2019-08-01', null);
+insert into clientes values( 2,'Alberto', 01009, '687654329', 'alberto@hotmail.com', '2019-08-02', 1);
+insert into clientes values( 3,'Ainoha', 08040, '676543298', 'ainoha@icloud.com', '2019-08-03', null);
+insert into clientes values( 4, 'pedro', 04102, '676543297', 'pedro@hotmail.com', '2019-08-04', 3);
 SELECT * FROM clientes;
 
 describe empleados;
@@ -144,28 +124,17 @@ insert into empleados values(2, 'maria');
 SELECT * FROM empleados;
 
 describe gafas;
-INSERT INTO gafas VALUES(1, 'rayban', 1, 0.75, 'flotante', 'negro', 'negro', 120, 2);
-INSERT INTO gafas VALUES(2, 'rayban', 0.5, 0.75, 'pasta', 'plata', 'negro', 150, 2);
-INSERT INTO gafas VALUES(3, 'polaorid', 1.25, 1.7, 'metalico', 'plata', 'dorado', 98, 1);
-INSERT INTO gafas VALUES(4, 'ralph', 2, 2.2, 'flotante', 'negro', 'blanco', 110, 3);
+INSERT INTO gafas VALUES(1, 'rayban', 1, 0.75, 'flotante', 'negro', 'negro', 120, '2021-08-10', 1, 4, 2);
+INSERT INTO gafas VALUES(2, 'rayban', 0.5, 0.75, 'pasta', 'plata', 'negro', 150, '2021-04-03', 2, 3, 1);
+INSERT INTO gafas VALUES(3, 'polaorid', 1.25, 1.7, 'metalico', 'plata', 'dorado', 98, '2021-01-12', 3, 2, 2);
+INSERT INTO gafas VALUES(4, 'ralph', 2, 2.2, 'flotante', 'negro', 'blanco', 110, '2020-11-23', 4, 1, 1);
 SELECT * FROM gafas;
 
-describe ventas;
-INSERT INTO ventas VALUES(1, 4, 4, 1, 110, '2021-08-10');
-INSERT INTO ventas VALUES(2, 1, 1, 2, 120, '2021-04-03');
-INSERT INTO ventas VALUES(3, 2, 2, 1, 150, '2021-01-12');
-INSERT INTO ventas VALUES(4, 4, 3, 2, 110, '2020-11-23');
-INSERT INTO ventas VALUES(5, 4, 3, 2, 110, '2021-11-07');
-SELECT * FROM ventas;
-
--- Optica:
-
 #    Llista el total de factures d'un client en un període determinat
-select * from clientes c, ventas v where c.id=v.clientes_id and c.nombre='pedro' and year(v.fecha)=2020;
+select * from clientes c, gafas g where c.id=g.clientes_id and c.nombre='pedro' and year(g.fechaVenta)=2021;
 
 #    Llista els diferents models d'ulleres que ha venut un empleat durant un any
-select e.nombre, g.marca, v.fecha from empleados e inner join ventas v on e.id=v.empleados_id inner join gafas g on v.gafas_id=g.id where e.nombre='maria' and year(v.fecha)=2020;
+select e.nombre, g.marca, g.fechaVenta from empleados e inner join gafas g on e.id=g.empleados_id where e.nombre='maria' and year(g.fechaVenta)=2021;
 
 #    Llista els diferents proveïdors que han subministrat ulleres venudes amb èxit per l'òptica
-select p.nombre as proveedor, g.marca from proveedores p inner join gafas g on p.id=g.proveedores_id inner join ventas v on g.id=v.gafas_id;
-
+select p.nombre as proveedor, g.marca from proveedores p inner join gafas g on p.id=g.proveedores_id;
