@@ -5,224 +5,201 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema youtube
+-- Schema pizzeria
 -- -----------------------------------------------------
-DROP DATABASE IF EXISTS `youtube`;
-CREATE SCHEMA IF NOT EXISTS `youtube` DEFAULT CHARACTER SET utf8 ;
-USE `youtube` ;
+DROP DATABASE IF EXISTS `pizzeria`;
+CREATE SCHEMA IF NOT EXISTS `pizzeria` DEFAULT CHARACTER SET utf8 ;
+USE `pizzeria` ;
 
 -- -----------------------------------------------------
--- Table `youtube`.`usuario`
+-- Table `pizzeria`.`categoriaPizzas`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`usuario` (
-  `id` INT NOT NULL,
-  `email` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
-  `username` VARCHAR(45) NOT NULL,
-  `fecha_nacimiento` DATE NOT NULL,
-  `sexo` ENUM('m', 'f') NOT NULL,
-  `pais` VARCHAR(45) NOT NULL,
-  `cp` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `pizzeria`.`categoriaPizzas` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8mb3;
 
 
 -- -----------------------------------------------------
--- Table `youtube`.`video`
+-- Table `pizzeria`.`provincia`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`video` (
+CREATE TABLE IF NOT EXISTS `pizzeria`.`provincia` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `pizzeria`.`localidad`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pizzeria`.`localidad` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  `provincia_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_localidad_provincia_idx` (`provincia_id` ASC) VISIBLE,
+  CONSTRAINT `fk_localidad_provincia`
+    FOREIGN KEY (`provincia_id`)
+    REFERENCES `pizzeria`.`provincia` (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8mb3
+COMMENT = '								';
+
+
+-- -----------------------------------------------------
+-- Table `pizzeria`.`cliente`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pizzeria`.`cliente` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  `apellido` VARCHAR(45) NOT NULL,
+  `direccion` VARCHAR(45) NOT NULL,
+  `cp` INT NOT NULL,
+  `telefono` INT NOT NULL,
+  `localidad_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_cliente_localidad1_idx` (`localidad_id` ASC) VISIBLE,
+  CONSTRAINT `fk_cliente_localidad1`
+    FOREIGN KEY (`localidad_id`)
+    REFERENCES `pizzeria`.`localidad` (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `pizzeria`.`tienda`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pizzeria`.`tienda` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `direccion` VARCHAR(45) NOT NULL,
+  `cp` VARCHAR(45) NOT NULL,
+  `localidad_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_tienda_localidad1_idx` (`localidad_id` ASC) VISIBLE,
+  CONSTRAINT `fk_tienda_localidad1`
+    FOREIGN KEY (`localidad_id`)
+    REFERENCES `pizzeria`.`localidad` (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `pizzeria`.`empleado`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pizzeria`.`empleado` (
   `id` INT NOT NULL,
-  `titulo` VARCHAR(45) NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `apellido` VARCHAR(45) NOT NULL,
+  `nif` VARCHAR(45) NOT NULL,
+  `telefono` VARCHAR(45) NOT NULL,
+  `puesto` ENUM('cocinero', 'repartidor') NOT NULL,
+  `tienda_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_empleado_tienda1_idx` (`tienda_id` ASC) VISIBLE,
+  CONSTRAINT `fk_empleado_tienda1`
+    FOREIGN KEY (`tienda_id`)
+    REFERENCES `pizzeria`.`tienda` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `pizzeria`.`repartoPedido`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pizzeria`.`repartoPedido` (
+  `id` INT NOT NULL,
+  `fechaHora` DATETIME NOT NULL,
+  `empleado_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_repartoPedido_empleado1_idx` (`empleado_id` ASC) VISIBLE,
+  CONSTRAINT `fk_repartoPedido_empleado1`
+    FOREIGN KEY (`empleado_id`)
+    REFERENCES `pizzeria`.`empleado` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `pizzeria`.`pedido`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pizzeria`.`pedido` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `fecha` DATETIME NOT NULL,
+  `delivery` ENUM('si', 'no') NOT NULL,
+  `precio_total` DECIMAL(5,3) NOT NULL,
+  `cliente_id` INT NOT NULL,
+  `tienda_id` INT NOT NULL,
+  `repartoPedido_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_pedido_cliente1_idx` (`cliente_id` ASC) VISIBLE,
+  INDEX `fk_pedido_tienda1_idx` (`tienda_id` ASC) VISIBLE,
+  INDEX `fk_pedido_repartoPedido1_idx` (`repartoPedido_id` ASC) VISIBLE,
+  CONSTRAINT `fk_pedido_cliente1`
+    FOREIGN KEY (`cliente_id`)
+    REFERENCES `pizzeria`.`cliente` (`id`),
+  CONSTRAINT `fk_pedido_tienda1`
+    FOREIGN KEY (`tienda_id`)
+    REFERENCES `pizzeria`.`tienda` (`id`),
+  CONSTRAINT `fk_pedido_repartoPedido1`
+    FOREIGN KEY (`repartoPedido_id`)
+    REFERENCES `pizzeria`.`repartoPedido` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `pizzeria`.`producto`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pizzeria`.`producto` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `tipo` ENUM('pizza', 'hamburguesa', 'bebida') NOT NULL,
   `descripcion` VARCHAR(45) NOT NULL,
-  `tamaño` INT NOT NULL,
-  `nombre_archivo` VARCHAR(45) NOT NULL,
-  `duracion_video` TIME NOT NULL,
-  `thumbnail` VARCHAR(45) NOT NULL,
-  `reproducciones` INT NOT NULL,
-  `estado` ENUM('publico', 'privado', 'oculto') NOT NULL,
-  `numero_likes` INT NOT NULL,
-  `numero_dislikes` INT NOT NULL,
-  `fechaCreacon` DATETIME NOT NULL,
-  `usuario_id` INT NOT NULL,
+  `imagen` VARCHAR(45) NOT NULL,
+  `precio` DECIMAL(5,3) NOT NULL,
+  `categoria_pizzas_id` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_video_usuario_idx` (`usuario_id` ASC) VISIBLE,
-  CONSTRAINT `fk_video_usuario`
-    FOREIGN KEY (`usuario_id`)
-    REFERENCES `youtube`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+  INDEX `fk_pizzas_categoria_pizzas1_idx` (`categoria_pizzas_id` ASC) VISIBLE,
+  CONSTRAINT `fk_pizzas_categoria_pizzas1`
+    FOREIGN KEY (`categoria_pizzas_id`)
+    REFERENCES `pizzeria`.`categoriaPizzas` (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8mb3;
 
 
 -- -----------------------------------------------------
--- Table `youtube`.`etiquetas`
+-- Table `pizzeria`.`pedidoDetalle`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`etiquetas` (
+CREATE TABLE IF NOT EXISTS `pizzeria`.`pedidoDetalle` (
   `id` INT NOT NULL,
-  `nombre` VARCHAR(45) NOT NULL,
-  `video_id` INT NOT NULL,
+  `cantidad` INT NULL DEFAULT NULL,
+  `pedido_id` INT NOT NULL,
+  `producto_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_etiquetas_video1_idx` (`video_id` ASC) VISIBLE,
-  CONSTRAINT `fk_etiquetas_video1`
-    FOREIGN KEY (`video_id`)
-    REFERENCES `youtube`.`video` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `youtube`.`canal`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`canal` (
-  `usuario_id` INT NOT NULL,
-  `nombre` VARCHAR(45) NOT NULL,
-  `descripcion` VARCHAR(45) NOT NULL,
-  `fecha_creacion` DATE NOT NULL,
-  PRIMARY KEY (`usuario_id`),
-  INDEX `fk_canal_usuario1_idx` (`usuario_id` ASC) VISIBLE,
-  CONSTRAINT `fk_canal_usuario1`
-    FOREIGN KEY (`usuario_id`)
-    REFERENCES `youtube`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `youtube`.`playlist`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`playlist` (
-  `id` INT NOT NULL,
-  `nombre` VARCHAR(45) NOT NULL,
-  `fechaCreacion` VARCHAR(45) NOT NULL,
-  `estado` ENUM('publico', 'privado') NOT NULL,
-  `usuario_id` INT NOT NULL,
-  `publicacion_video_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_playlist_usuario1_idx` (`usuario_id` ASC) VISIBLE,
-  CONSTRAINT `fk_playlist_usuario1`
-    FOREIGN KEY (`usuario_id`)
-    REFERENCES `youtube`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `youtube`.`comentarios`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`comentarios` (
-  `id` INT NOT NULL,
-  `texto` VARCHAR(45) NOT NULL,
-  `fecha_hora` DATE NOT NULL,
-  `usuario_id` INT NOT NULL,
-  `video_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_comentarios_usuario1_idx` (`usuario_id` ASC) VISIBLE,
-  INDEX `fk_comentarios_video1_idx` (`video_id` ASC) VISIBLE,
-  CONSTRAINT `fk_comentarios_usuario1`
-    FOREIGN KEY (`usuario_id`)
-    REFERENCES `youtube`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_comentarios_video1`
-    FOREIGN KEY (`video_id`)
-    REFERENCES `youtube`.`video` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `youtube`.`comentarios_agrada_desagrada`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`comentariosAgrada` (
-  `usuario_id` INT NOT NULL,
-  `comentarios_id` INT NOT NULL,
-  `fechaHora` DATE NOT NULL,
-  PRIMARY KEY (`usuario_id`, `comentarios_id`),
-  INDEX `fk_usuario_has_comentarios_comentarios1_idx` (`comentarios_id` ASC) VISIBLE,
-  INDEX `fk_usuario_has_comentarios_usuario1_idx` (`usuario_id` ASC) VISIBLE,
-  CONSTRAINT `fk_usuario_has_comentarios_usuario1`
-    FOREIGN KEY (`usuario_id`)
-    REFERENCES `youtube`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_usuario_has_comentarios_comentarios1`
-    FOREIGN KEY (`comentarios_id`)
-    REFERENCES `youtube`.`comentarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `youtube`.`suscribe`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`suscribe` (
-  `usuario_id` INT NOT NULL,
-  `canal_usuario_id` INT NOT NULL,
-  PRIMARY KEY (`usuario_id`, `canal_usuario_id`),
-  INDEX `fk_usuario_has_canal_canal1_idx` (`canal_usuario_id` ASC) VISIBLE,
-  INDEX `fk_usuario_has_canal_usuario1_idx` (`usuario_id` ASC) VISIBLE,
-  CONSTRAINT `fk_usuario_has_canal_usuario1`
-    FOREIGN KEY (`usuario_id`)
-    REFERENCES `youtube`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_usuario_has_canal_canal1`
-    FOREIGN KEY (`canal_usuario_id`)
-    REFERENCES `youtube`.`canal` (`usuario_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `youtube`.`like`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`like` (
-  `usuario_id` INT NOT NULL,
-  `video_id` INT NOT NULL,
-  `likeDislike` TINYINT NULL,
-  `fechaHora` DATE NULL,
-  PRIMARY KEY (`usuario_id`, `video_id`),
-  INDEX `fk_usuario_has_video_video1_idx` (`video_id` ASC) VISIBLE,
-  INDEX `fk_usuario_has_video_usuario1_idx` (`usuario_id` ASC) VISIBLE,
-  CONSTRAINT `fk_usuario_has_video_usuario1`
-    FOREIGN KEY (`usuario_id`)
-    REFERENCES `youtube`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_usuario_has_video_video1`
-    FOREIGN KEY (`video_id`)
-    REFERENCES `youtube`.`video` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `youtube`.`playlistVideo`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `youtube`.`playlistVideo` (
-  `playlist_id` INT NOT NULL,
-  `video_id` INT NOT NULL,
-  PRIMARY KEY (`playlist_id`, `video_id`),
-  INDEX `fk_playlist_has_video_video1_idx` (`video_id` ASC) VISIBLE,
-  INDEX `fk_playlist_has_video_playlist1_idx` (`playlist_id` ASC) VISIBLE,
-  CONSTRAINT `fk_playlist_has_video_playlist1`
-    FOREIGN KEY (`playlist_id`)
-    REFERENCES `youtube`.`playlist` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_playlist_has_video_video1`
-    FOREIGN KEY (`video_id`)
-    REFERENCES `youtube`.`video` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+  INDEX `fk_pedidoDetalle_pedido_idx` (`pedido_id` ASC) VISIBLE,
+  INDEX `fk_pedidoDetalle_producto1_idx` (`producto_id` ASC) VISIBLE,
+  CONSTRAINT `fk_pedidoDetalle_pedido`
+    FOREIGN KEY (`pedido_id`)
+    REFERENCES `pizzeria`.`pedido` (`id`),
+  CONSTRAINT `fk_pedidoDetalle_producto1`
+    FOREIGN KEY (`producto_id`)
+    REFERENCES `pizzeria`.`producto` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

@@ -113,6 +113,24 @@ DEFAULT CHARACTER SET = utf8mb3;
 
 
 -- -----------------------------------------------------
+-- Table `pizzeria`.`pedidoAtendido`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pizzeria`.`pedidoAtendido` (
+  `id` INT NOT NULL,
+  `fechaHora` DATETIME NOT NULL,
+  `empleado_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_repartoPedido_empleado1_idx` (`empleado_id` ASC) VISIBLE,
+  CONSTRAINT `fk_repartoPedido_empleado1`
+    FOREIGN KEY (`empleado_id`)
+    REFERENCES `pizzeria`.`empleado` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
 -- Table `pizzeria`.`pedido`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `pizzeria`.`pedido` (
@@ -122,20 +140,20 @@ CREATE TABLE IF NOT EXISTS `pizzeria`.`pedido` (
   `precio_total` DECIMAL(5,3) NOT NULL,
   `cliente_id` INT NOT NULL,
   `tienda_id` INT NOT NULL,
-  `empleado_id` INT NOT NULL,
+  `pedidoAtendido_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_pedido_cliente1_idx` (`cliente_id` ASC) VISIBLE,
   INDEX `fk_pedido_tienda1_idx` (`tienda_id` ASC) VISIBLE,
-  INDEX `fk_pedido_empleado1_idx` (`empleado_id` ASC) VISIBLE,
+  INDEX `fk_pedido_repartoPedido1_idx` (`pedidoAtendido_id` ASC) VISIBLE,
   CONSTRAINT `fk_pedido_cliente1`
     FOREIGN KEY (`cliente_id`)
     REFERENCES `pizzeria`.`cliente` (`id`),
   CONSTRAINT `fk_pedido_tienda1`
     FOREIGN KEY (`tienda_id`)
     REFERENCES `pizzeria`.`tienda` (`id`),
-  CONSTRAINT `fk_pedido_empleado1`
-    FOREIGN KEY (`empleado_id`)
-    REFERENCES `pizzeria`.`empleado` (`id`)
+  CONSTRAINT `fk_pedido_repartoPedido1`
+    FOREIGN KEY (`pedidoAtendido_id`)
+    REFERENCES `pizzeria`.`pedidoAtendido` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -184,27 +202,10 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
 
--- -----------------------------------------------------
--- Table `pizzeria`.`repartoPedido`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pizzeria`.`repartoPedido` (
-  `id` INT NOT NULL,
-  `fechaHora` DATETIME NOT NULL,
-  `pedido_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_repartoPedido_pedido1_idx` (`pedido_id` ASC) VISIBLE,
-  CONSTRAINT `fk_repartoPedido_pedido1`
-    FOREIGN KEY (`pedido_id`)
-    REFERENCES `pizzeria`.`pedido` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
-
-
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 use pizzeria;
 
@@ -240,24 +241,27 @@ insert into empleado values(4, 'martin', 'ponce', '45678123N', 656781234, 'repar
 insert into empleado values(5, 'talia', 'mora', '56781234P', 667812345, 'repartidor', 2);
 insert into empleado values(6, 'angel', 'sanches', '67812345A', 678123456, 'repartidor', 3);
 
-insert into pedido values(1, '2021-01-01', 'si', 18, 1, 3, 1);
-insert into pedido values(2, '2021-04-28', 'no', 22, 2, 2, 2);
-insert into pedido values(3, '2021-08-12', 'si', 34, 3, 1, 3);
-insert into pedido values(4, '2021-05-30', 'no', 31, 4, 3, 1);
+insert into pedidoAtendido values(1, '2021-01-01 16:04:00', 2);
+insert into pedidoAtendido values(2, '2021-04-28 17:44:12', 1);
+insert into pedidoAtendido values(3, '2021-08-12 18:20:09', 6);
+insert into pedidoAtendido values(4, '2021-06-21 20:00:00', 1);
+
+insert into pedido values(1, '2021-01-01', 'si', 18, 1, 3, 4);
+insert into pedido values(2, '2021-04-28', 'no', 22, 2, 2, 1);
+insert into pedido values(3, '2021-08-12', 'si', 34, 3, 1, 2);
+insert into pedido values(4, '2021-05-30', 'no', 31, 4, 3, 3);
 
 insert into pedidoDetalle values(1, 2, 4, 1);
 insert into pedidoDetalle values(2, 3, 3, 2);
 insert into pedidoDetalle values(3, 4, 2, 3);
 insert into pedidoDetalle values(4, 1, 1, 3);
 
-insert into repartoPedido values(1, '2021-01-01 16:04:00', 1);
-insert into repartoPedido values(2, '2021-04-28 17:44:12', 2);
-insert into repartoPedido values(3, '2021-08-12 18:20:09', 3);
-insert into repartoPedido values(4, '2021-06-21 20:00:00', 4);
-
 #   Llista quants productes de categoria 'Begudas' s'han venut en una determinada localitat
 select p.tipo, pd.cantidad, l.nombre from pedidoDetalle pd inner join producto p on pd.producto_id=p.id inner join pedido pe on pd.pedido_id=pe.id inner join tienda t on pe.tienda_id=t.id inner join localidad l on t.localidad_id=l.id where l.nombre='leganes';
 
 
 #   Llista quantes comandes ha efectuat un determinat emplea
-select e.nombre, count(e.nombre) as 'pedidos atentidos' from pedido p inner join empleado e on p.empleado_id=e.id where e.nombre='pedro';
+# select e.nombre, count(e.nombre) as 'pedidos atentidos' from pedido p inner join repartoPedido r on r.empleado_id=e.id where e.nombre='pedro';
+
+select e.nombre, count(e.nombre) as 'pedidos atentidos' from pedido p inner join pedidoAtendido pa on p.pedidoAtendido_id=pa.id inner join empleado e on pa.empleado_id=e.id where e.nombre='pedro';
+
