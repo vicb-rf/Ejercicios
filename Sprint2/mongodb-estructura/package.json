@@ -1,0 +1,15 @@
+{
+  "name": "mongodb-estructura",
+  "version": "1.0.0",
+  "description": "ejercicios mongodb",
+  "main": "",
+  "dependencies": {
+    "mongodb": "^4.1.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "vc",
+  "license": "ISC"
+}
