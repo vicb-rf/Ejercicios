@@ -8,5 +8,4 @@ class Marcador {
     }
 }
 
-const marcador = new Marcador()
-module.exports = marcador
+module.exports = Marcador
