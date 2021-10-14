@@ -4,13 +4,13 @@ class Jugador {
         this.puntos = 0;
         //console.log(`Jugador ${this.name} creado`);
     }
-    
-    ganaPuntos(puntos){
+
+    ganaPuntos(puntos) {
         this.puntos += puntos;
         console.log(`${puntos} puntos gano ${this.name}`);
     }
 
-    pierdePuntos(puntos){
+    pierdePuntos(puntos) {
         this.puntos -= puntos;
         console.log(`${puntos} puntos perdio ${this.name}`);
     }

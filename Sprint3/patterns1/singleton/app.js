@@ -29,11 +29,7 @@ jugador1.pierdePuntos(50);
 jugador2.pierdePuntos(50);
 jugador3.pierdePuntos(50);
 
-
 juego1.mostrarMarcador();
-
-
-
 
 juego1.ganador();
 

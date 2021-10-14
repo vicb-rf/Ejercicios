@@ -3,7 +3,7 @@ class Marcador {
         if (Marcador.instance) {
             throw new Error('Marcador ya instaciado');
         }
-       
+
         Marcador.instance = this;
     }
 }
