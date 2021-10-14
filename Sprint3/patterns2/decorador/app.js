@@ -8,10 +8,10 @@ const Producto = require('./Producto');
 const decorador = require('./Decorador');
 
 
-const p1 = new Producto('p1', 120, 'CNY');
-const p2 = new Producto('p2', 232, 'USD');
-const p3 = new Producto('p3', 333, 'JPY');
-const p4 = new Producto('p4', 444, 'GBP');
+const p1 = new Producto('producto1', 120, 'CNY');
+const p2 = new Producto('producto2', 232, 'USD');
+const p3 = new Producto('producto3', 333, 'JPY');
+const p4 = new Producto('producto4', 444, 'GBP');
 
 
 console.log('Producto inicial: ', p1.describe());
