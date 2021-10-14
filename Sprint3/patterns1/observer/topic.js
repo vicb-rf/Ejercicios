@@ -1,10 +1,11 @@
-const EventEmitter  = require('events');
+const EventEmitter = require('events');
 
 class Topic extends EventEmitter {
-    constructor(name) {        
+    constructor(name) {
         super();
         this.name = name;
         this.observers = [];
+        //console.log(`${this.name} creado`)
     }
 
     subscribe(o) {
@@ -17,19 +18,22 @@ class Topic extends EventEmitter {
 
     //notifica a todos los usuarios
     notify() {
-        this.on('mensaje', (mensaje, usuario) => {
-            console.log(`${this.name} a recibido mensaje enviado por ${usuario.name}`);
-            this.observers.forEach(usuario => {
-                usuario.notify();
-                usuario.enviaMensaje(mensaje);
+        this.on('mensaje', (usuario, mensaje) => {
+            console.log(`${this.name}: ${usuario.name} envio un mensaje`);
+            this.observers.forEach(usuario => {                
+                    usuario.notify();
+                    usuario.enviaMensaje(mensaje);
+               
             })
         })
     }
 
-    //envia mensaje a topic
-    enviaMensaje(mensaje, usuario){
+    enviaMensaje(usuario, mensaje) {
         this.notify();
-        this.emit('mensaje', mensaje,  usuario)
+        this.emit('mensaje', usuario, mensaje)
+
+      
+        
     }
 }
 

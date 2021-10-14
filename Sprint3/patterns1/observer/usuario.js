@@ -1,9 +1,10 @@
-const EventEmitter  = require('events');
+const EventEmitter = require('events');
 
 class Usuario extends EventEmitter {
     constructor(name) {
         super();
         this.name = name;
+        //console.log(`${this.name} creado`)
     }
 
     //recibe mensaje
@@ -13,7 +14,7 @@ class Usuario extends EventEmitter {
         })
     }
 
-    enviaMensaje(mensaje){
+    enviaMensaje(mensaje) {
         this.emit('mensaje', mensaje);
     }
 }
